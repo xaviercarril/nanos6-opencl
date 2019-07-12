@@ -15,6 +15,10 @@
 #include "cuda/CUDAInfo.hpp"
 #endif //USE_CUDA
 
+#ifdef USE_OPENCL
+#include "opencl/openclInfo.hpp"
+#endif //USE_OPENCL
+
 std::vector<DeviceInfo *> HardwareInfo::_infos;
 
 void HardwareInfo::initialize()
@@ -26,6 +30,11 @@ void HardwareInfo::initialize()
 #ifdef USE_CUDA
 	_infos[nanos6_device_t::nanos6_cuda_device] = new CUDAInfo();
 #endif //USE_CUDA
+
+#ifdef USE_OPENCL
+	_infos[nanos6_device_t::nanos6_opencl_device] = new openclInfo();
+#endif //USE_OPENCL
+	
 	
 	for (int i = 0; i < nanos6_device_t::nanos6_device_type_num; ++i) {
 		if (_infos[i] != nullptr) {
