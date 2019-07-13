@@ -4,12 +4,14 @@
 #include "openclDevice.hpp"
 #include "hardware/hwinfo/DeviceInfo.hpp"
 
+#include <CL/cl.h>
 #include <vector>
 
 
 class openclInfo: public DeviceInfo {
 private:
         std::vector<openclDevice *> _devices;
+	std::vector<openclPollingService *> _pollingServices;
 public:
 
         void initialize();
@@ -33,8 +35,15 @@ public:
                 return _devices[index]->getMemoryPlace();
         }
 
+	inline openclPollingService *getPollingService(int index)
+        {
+                return _pollingServices[index];
+        }
+
         static inline void setDevice(int device)
         {
+		
+	}
 //FALTA ACABAR!!
 /*
                 cudaError_t err = cudaSetDevice(device);
