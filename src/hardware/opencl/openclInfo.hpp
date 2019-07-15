@@ -4,7 +4,14 @@
 #include "openclDevice.hpp"
 #include "hardware/hwinfo/DeviceInfo.hpp"
 
-#include <CL/cl.h>
+#ifdef HAVE_OPENCL_OPENCL_H
+#include <OpenCL/opencl.h>
+#endif
+
+#ifdef HAVE_CL_OPENCL_H
+#include <CL/opencl.h>
+#endif
+
 #include <vector>
 
 
@@ -42,7 +49,7 @@ public:
 
         static inline void setDevice(int device)
         {
-		
+
 	}
 //FALTA ACABAR!!
 /*

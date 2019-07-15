@@ -33,7 +33,7 @@ private:
     		case -4: return "CL_MEM_OBJECT_ALLOCATION_FAILURE";
     		case -5: return "CL_OUT_OF_RESOURCES";
     		case -6: return "CL_OUT_OF_HOST_MEMORY";
-		case -7: return "CL_PROFILING_INFO_NOT_AVAILABLE";
+				case -7: return "CL_PROFILING_INFO_NOT_AVAILABLE";
     		case -8: return "CL_MEM_COPY_OVERLAP";
     		case -9: return "CL_IMAGE_FORMAT_MISMATCH";
     		case -10: return "CL_IMAGE_FORMAT_NOT_SUPPORTED";
@@ -50,7 +50,7 @@ private:
     		// compile-time errors
     		case -30: return "CL_INVALID_VALUE";
     		case -31: return "CL_INVALID_DEVICE_TYPE";
-	   	case -32: return "CL_INVALID_PLATFORM";
+	   		case -32: return "CL_INVALID_PLATFORM";
     		case -33: return "CL_INVALID_DEVICE";
     		case -34: return "CL_INVALID_CONTEXT";
     		case -35: return "CL_INVALID_QUEUE_PROPERTIES";
@@ -65,7 +65,7 @@ private:
     		case -44: return "CL_INVALID_PROGRAM";
     		case -45: return "CL_INVALID_PROGRAM_EXECUTABLE";
     		case -46: return "CL_INVALID_KERNEL_NAME";
-   		case -47: return "CL_INVALID_KERNEL_DEFINITION";
+   			case -47: return "CL_INVALID_KERNEL_DEFINITION";
     		case -48: return "CL_INVALID_KERNEL";
     		case -49: return "CL_INVALID_ARG_INDEX";
     		case -50: return "CL_INVALID_ARG_VALUE";
@@ -91,8 +91,8 @@ private:
    		 // extension errors
     		case -1000: return "CL_INVALID_GL_SHAREGROUP_REFERENCE_KHR";
     		case -1001: return "CL_PLATFORM_NOT_FOUND_KHR";
-   	 	case -1002: return "CL_INVALID_D3D10_DEVICE_KHR";
- 	   	case -1003: return "CL_INVALID_D3D10_RESOURCE_KHR";
+   	 		case -1002: return "CL_INVALID_D3D10_DEVICE_KHR";
+ 	   		case -1003: return "CL_INVALID_D3D10_RESOURCE_KHR";
     		case -1004: return "CL_D3D10_RESOURCE_ALREADY_ACQUIRED_KHR";
     		case -1005: return "CL_D3D10_RESOURCE_NOT_ACQUIRED_KHR";
     		default: return "Unknown OpenCL error";
@@ -106,27 +106,27 @@ private:
 		std::string errName = getErrorString(err);
 		oss << errName;
 	}
-	
+
 public:
-	
+
 	template<typename... TS>
 	static inline void handle(cl_int err, TS... reasonParts)
 	{
 		if (__builtin_expect(err == CL_SUCCES, 1)) {
 			return;
 		}
-		
+
 		std::ostringstream oss;
-		
+
 		printOpenCL_ErrorError(err, oss);
 		emitReasonParts(oss, reasonParts...);
 		oss << std::endl;
-		
+
 		{
 			std::lock_guard<SpinLock> guard(_lock);
 			std::cerr << oss.str();
 		}
-		
+
 #ifndef NDEBUG
 		abort();
 #else
@@ -144,37 +144,37 @@ public:
 				return true;
 			}
 		}
-		
+
 		std::ostringstream oss;
-		
+
 		printCUDAError(err, oss);
 		emitReasonParts(oss, reasonParts...);
 		oss << std::endl;
-		
+
 		{
 			std::lock_guard<SpinLock> guard(_lock);
 			std::cerr << oss.str();
 		}
-		
+
 #ifndef NDEBUG
 		abort();
 #else
 		exit(1);
 #endif
 	}
-*/	
+*/
 	template<typename... TS>
 	static inline void warnIf(bool failure, TS... reasonParts)
 	{
 		if (__builtin_expect(!failure, 1)) {
 			return;
 		}
-		
+
 		std::ostringstream oss;
 		oss << "Warning: ";
 		emitReasonParts(oss, reasonParts...);
 		oss << std::endl;
-		
+
 		{
 			std::lock_guard<SpinLock> guard(_lock);
 			std::cerr << oss.str();
