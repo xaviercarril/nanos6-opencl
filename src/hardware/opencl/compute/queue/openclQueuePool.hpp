@@ -14,6 +14,7 @@
 #define OPENCL_STARTING_QUEUE_NUM 0
 
 #include "openclQueue.hpp"
+#include "../../openclProgram.hpp"
 
 class openclQueuePool {
 private:
@@ -47,6 +48,7 @@ public:
         {
                 if (_pool.empty()) {
                         /*We need to create a program*/
+			//program = new openclProgram(...);
                         // ++_size;
                         // return new openclQueue(_size - 1);
                 } else {

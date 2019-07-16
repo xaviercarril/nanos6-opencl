@@ -2,35 +2,37 @@
 	This file is part of Nanos6 and is licensed under the terms contained in the COPYING file.
 	
 	Copyright (C) 2018 Barcelona Supercomputing Center (BSC)
+
+	Author: Xavier Carril
 */
 
-#ifndef CUDA_HELPER_HPP
-#define CUDA_HELPER_HPP
+#ifndef OPENCL_HELPER_HPP
+#define OPENCL_HELPER_HPP
 
 #include <string>
 
 #include "lowlevel/SpinLock.hpp" 
 
-#include "hardware/cuda/CUDADevice.hpp"
+#include "hardware/opencl/openclDevice.hpp"
 
 class Task;
 
-class CUDAPollingService {
+class openclPollingService {
 
 private:
 	std::string _serviceName;
-	CUDADevice *_device;
+	openclDevice *_device;
 	SpinLock _lock;
 	
 	void finishTask(Task *task);
 	void launchTask(Task *task);	
 public:	
-	CUDAPollingService(CUDADevice *device);
+	openclPollingService(openclDevice *device);
 	
-	CUDAPollingService(CUDAPollingService const &) = delete;
-	CUDAPollingService operator=(CUDAPollingService const &) = delete;
+	openclPollingService(openclPollingService const &) = delete;
+	openclPollingService operator=(openclPollingService const &) = delete;
 	
-	~CUDAPollingService();
+	~openclPollingService();
 	
 	//! \brief Register the polling service 
 	void start();
@@ -46,5 +48,5 @@ public:
 };
 
 
-#endif // CUDA_HELPER_HPP
+#endif // OPENCL_HELPER_HPP
 

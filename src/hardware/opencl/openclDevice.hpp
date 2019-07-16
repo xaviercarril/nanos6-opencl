@@ -8,6 +8,7 @@
 
 #include "hardware/places/NUMAPlace.hpp"
 
+#include "openclProgram.hpp"
 #include <vector>
 
 
@@ -18,14 +19,26 @@ private:
 
         int _index;                                                     //!< Index of the OpenCL device
         NUMAPlace *_numaPlace;                                  //!< NUMA node where this device is located
+	cl::Device _device;
+	openclProgram _program;
 public:
 
-        openclDevice(int index) :
+        openclDevice(int index, cl::Device device) :
                 _index(index)
         {
                 _computePlace = new openclComputePlace(index);
                 _memoryPlace = new openclMemoryPlace(index);
+
+		_device = device;
+		_program = new openclProgram(this);
         }
+
+	~openclDevice()
+	{
+		delete _program;
+		delete _computePlace;
+		delete _memoryPlace;
+	}
 
         CUDAComputePlace *getComputePlace() const
         {
@@ -46,6 +59,11 @@ public:
         {
                 return _numaPlace;
         }
+		
+	cl::Device getDevice() const
+	{
+		return _device;
+	}
 };
 
 #endif //OPENCL_DEVICE_HPP

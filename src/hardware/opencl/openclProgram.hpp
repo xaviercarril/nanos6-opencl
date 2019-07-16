@@ -16,7 +16,7 @@
 
 #ifdef HAVE_CL_OPENCL_H
 #include <CL/cl.hpp>
-#include <CL/cl.h>
+#include <CL/opencl.h>
 #endif
 
 #include<string>
@@ -29,10 +29,10 @@ private:
 	cl::Context _context;
 public:
 
-  openclProgram(const std::string& file): _program
+  openclProgram(/*const std::string& file,*/ openclDevice device): _program
   {
 		cl_int err;
-		std::vector<cl::Platform> platforms;
+		/*std::vector<cl::Platform> platforms;
 		err = cl::Platform::get(&platforms);
 		openclErrorHandler::handle(err, "When getting platforms");
 
@@ -40,10 +40,12 @@ public:
 		std::vector<cl::Device> devices;
 		//To change. It depends on the type of device that we want
 		err = platform.getDevices(CL_DEVICE_TYPE_GPU, &devices);
-		openclErrorHandler::handle(err, "When getting devices");
+		openclErrorHandler::handle(err, "When getting devices");*/
 
-		_device = devices.front();
+		_device = device.getDevice();
 
+		//Temporal
+		std::string file = "kernel.cl";
 		std::istream kernelFile(file);
 		std::string src(std::istreambuf_iterator<char>(kernelFile), (std::istreambuf_iterator<char>()));
 

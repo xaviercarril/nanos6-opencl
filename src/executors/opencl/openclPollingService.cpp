@@ -2,6 +2,8 @@
 	This file is part of Nanos6 and is licensed under the terms contained in the COPYING file.
 	
 	Copyright (C) 2018 Barcelona Supercomputing Center (BSC)
+
+	Author: Xavier Carril
 */
 
 #include "openclPollingService.hpp"
@@ -10,7 +12,7 @@
 
 #include "hardware/opencl/openclInfo.hpp"
 #include "scheduling/Scheduler.hpp"
-#include "lowlevel/cuda/CUDAErrorHandler.hpp"
+#include "lowlevel/opencl/openclErrorHandler.hpp"
 
 #include "tasks/Task.hpp"
 #include "tasks/TaskDeviceData.hpp"
@@ -18,39 +20,47 @@
 
 #include "executors/threads/TaskFinalization.hpp"
 
-#include <cuda_runtime_api.h>
+#ifdef HAVE_OPENCL_OPENCL_H
+#include <OpenCL/cl.hpp>
+#include <OpenCL/opencl.h>
+#endif
 
-CUDAPollingService::CUDAPollingService(CUDADevice *device)
+#ifdef HAVE_CL_OPENCL_H
+#include <CL/cl.hpp>
+#include <CL/opencl.h>
+#endif
+
+openclPollingService::openclPollingService(openclDevice *device)
 	: _device(device)
 {
 	std::stringstream ss;
-	ss << "CUDAPollingService-" << _device->getIndex();
+	ss << "openclPollingService-" << _device->getIndex();
 	_serviceName = ss.str();
 }
 
-CUDAPollingService::~CUDAPollingService()
+openclPollingService::~openclPollingService()
 {
 }
 
-void CUDAPollingService::start()
+void openclPollingService::start()
 {
-	nanos6_register_polling_service(_serviceName.c_str(), (nanos6_polling_service_t) &CUDAPollingService::runHelper, (void *) this);
+	nanos6_register_polling_service(_serviceName.c_str(), (nanos6_polling_service_t) &openclPollingService::runHelper, (void *) this);
 }
 
-void CUDAPollingService::stop()
+void openclPollingService::stop()
 {
-	nanos6_unregister_polling_service(_serviceName.c_str(), (nanos6_polling_service_t) &CUDAPollingService::runHelper, (void *) this);
+	nanos6_unregister_polling_service(_serviceName.c_str(), (nanos6_polling_service_t) &openclPollingService::runHelper, (void *) this);
 }
 
-void CUDAPollingService::finishTask(Task *task)
+void openclPollingService::finishTask(Task *task)
 {
-	cudaError_t err = cudaPeekAtLastError();
-	CUDAErrorHandler::handle(err);
+	//cl_int err = cudaPeekAtLastError();
+	//CUDAErrorHandler::handle(err);
 	
 	_device->getComputePlace()->postRunTask(task);
 	_device->getMemoryPlace()->postRunTask(task);
 	
-	CUDADeviceData *deviceData = (CUDADeviceData *) task->getDeviceData();
+	openclDeviceData *deviceData = (openclDeviceData *) task->getDeviceData();
 	delete deviceData;
 	
 	if (task->markAsFinished(_device->getComputePlace())) {
@@ -62,7 +72,7 @@ void CUDAPollingService::finishTask(Task *task)
 	}
 }
 
-void CUDAPollingService::launchTask(Task *task)
+void openclPollingService::launchTask(Task *task)
 {
 	assert(_device != nullptr);
 	assert(task != nullptr);

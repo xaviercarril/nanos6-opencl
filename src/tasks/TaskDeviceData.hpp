@@ -25,5 +25,21 @@ struct CUDADeviceData {
 
 #endif //USE_CUDA
 
+#ifdef USE_OPENCL
+
+#include "hardware/opencl/compute/queue/openclQueue.hpp"
+
+
+struct openclDeviceData {
+	openclQueue *_queue;
+	
+	openclDeviceData():
+		_queue(nullptr,nullptr,nullptr)
+	{
+	}
+};
+
+#endif //USE_OPENCL
+
 #endif //TASK_DEVICE_DATA_HPP
 
