@@ -17,19 +17,25 @@
 //       That is:   nanos6_major_api . nanos6_opencl_device_api
 enum nanos6_opencl_device_api_t { nanos6_opencl_device_api = 1 };
 
-#include <opencl.h>
-//#include <cuda_runtime_api.h>
+#ifdef HAVE_OPENCL_OPENCL_H
+#include <OpenCL/opencl.h>
+#include <OpenCL/cl.hpp>
+#endif
 
+#ifdef HAVE_CL_OPENCL_H
+#include <CL/opencl.h>
+#include <CL/cl.hpp>
+#endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-/*
+
 typedef struct {
-	cudaStream_t stream;
-} nanos6_cuda_device_environment_t;
-*/
+	cl_command_queue queue;
+} nanos6_opencl_device_environment_t;
+
 
 #ifdef __cplusplus
 }

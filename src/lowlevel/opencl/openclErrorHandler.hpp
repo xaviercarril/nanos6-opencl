@@ -118,7 +118,7 @@ public:
 
 		std::ostringstream oss;
 
-		printOpenCL_ErrorError(err, oss);
+		printOpenCL_Error(err, oss);
 		emitReasonParts(oss, reasonParts...);
 		oss << std::endl;
 
@@ -133,21 +133,21 @@ public:
 		exit(1);
 #endif
 	}
-/*
+
 	template<typename... TS>
 	static inline bool handleEvent(cl_int err, TS... reasonParts)
 	{
-		if (__builtin_expect(err == cudaErrorNotReady || err == cudaSuccess, 1)) {
-			if (err == cudaErrorNotReady) {
-				return false;
-			} else {
+		if (__builtin_expect(err == CL_QUEUED || err = CL_SUBMITTED || err == CL_RUNNING || err == CL_SUCCES, 1)) {
+			if (err == CL_SUCCES) {
 				return true;
+			} else {
+				return false;
 			}
 		}
 
 		std::ostringstream oss;
 
-		printCUDAError(err, oss);
+		printOpenCL_Error(err, oss);
 		emitReasonParts(oss, reasonParts...);
 		oss << std::endl;
 
@@ -162,7 +162,7 @@ public:
 		exit(1);
 #endif
 	}
-*/
+
 	template<typename... TS>
 	static inline void warnIf(bool failure, TS... reasonParts)
 	{

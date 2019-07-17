@@ -11,6 +11,7 @@
 #include <DataAccessRegistration.hpp>
 
 #include "hardware/opencl/openclInfo.hpp"
+#include "hardware/opencl/openclProgram.hpp"
 #include "scheduling/Scheduler.hpp"
 #include "lowlevel/opencl/openclErrorHandler.hpp"
 
@@ -77,9 +78,9 @@ void openclPollingService::launchTask(Task *task)
 	assert(_device != nullptr);
 	assert(task != nullptr);
 	
-	cudaSetDevice(_device->getIndex());
+	openclProgram(_device->getIndex());
 	
-	CUDADeviceData *deviceData = new CUDADeviceData();
+	openclDeviceData *deviceData = new openclDeviceData();
 	task->setDeviceData((void *) deviceData);
 	
 	CUDAComputePlace *computePlace = _device->getComputePlace();
