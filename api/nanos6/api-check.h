@@ -1,6 +1,6 @@
 /*
 	This file is part of Nanos6 and is licensed under the terms contained in the COPYING file.
-	
+
 	Copyright (C) 2018-2019 Barcelona Supercomputing Center (BSC)
 */
 
@@ -34,6 +34,12 @@
 enum nanos6_cuda_device_api_t { nanos6_cuda_device_api = 1 };
 #endif
 
+#if USE_OPENCL
+#include "opencl_device.h"
+#else
+enum nanos6_opencl_device_api_t { nanos6_opencl_device_api = 1 };
+#endif
+
 #pragma GCC visibility push(default)
 
 enum nanos6_api_check_api_t { nanos6_api_check_api = 5 };
@@ -48,7 +54,7 @@ extern "C" {
 typedef struct {
 	enum nanos6_api_check_api_t api_check_api_version;
 	enum nanos6_major_api_t major_api_version;
-	
+
 	enum nanos6_blocking_api_t blocking_api_version;
 	enum nanos6_bootstrap_api_t bootstrap_api_version;
 	enum nanos6_cluster_api_t cluster_api_version;
@@ -58,6 +64,7 @@ typedef struct {
 	enum nanos6_library_mode_api_t library_mode_api_version;
 	enum nanos6_locking_api_t locking_api_version;
 	enum nanos6_monitoring_api_t monitoring_api_version;
+	enum nanos6_opencl_device_api_t  nanos6_opencl_device_api_version;
 	enum nanos6_polling_api_t polling_api_version;
 	enum nanos6_task_constraints_api_t task_constraints_api_version;
 	enum nanos6_task_execution_api_t task_execution_api_version;
@@ -68,7 +75,7 @@ typedef struct {
 
 
 //! \brief checks if the runtime API is the one that is expected
-//! 
+//!
 //! \returns 1 if the API matches, otherwise 0
 int nanos6_check_api_versions(nanos6_api_versions_t const *api_versions);
 

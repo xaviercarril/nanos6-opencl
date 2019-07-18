@@ -56,17 +56,17 @@ public:
 
         void record()
         {
-		cl_int err;
+		            cl_int err;
                 _event = clCreateUserEvent(((openclDeviceData *) _task->getDeviceData())->_queue->getContextQueue(), &err);
                 openclErrorHandler::handle(err, "When recording event");
         }
 
         bool finished()
         {
-		cl_int status;
+		            cl_int status;
                 cl_int err = clGetEventInfo(_event, CL_EVENT_COMMAND_EXECUTION_STATUS, sizeof(cl_int), &status, nullptr);
                 openclErrorHandler::handle(err, "When checking event status");
-		return openclErrorHandlerEvent::handleEvent(status, "Status Error");
+		            return openclErrorHandlerEvent::handleEvent(status, "Status Error");
         }
 
 };

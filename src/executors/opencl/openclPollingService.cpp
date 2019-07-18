@@ -1,6 +1,6 @@
 /*
 	This file is part of Nanos6 and is licensed under the terms contained in the COPYING file.
-	
+
 	Copyright (C) 2018 Barcelona Supercomputing Center (BSC)
 
 	Author: Xavier Carril
@@ -57,16 +57,16 @@ void openclPollingService::finishTask(Task *task)
 {
 	//cl_int err = cudaPeekAtLastError();
 	//CUDAErrorHandler::handle(err);
-	
+
 	_device->getComputePlace()->postRunTask(task);
 	_device->getMemoryPlace()->postRunTask(task);
-	
+
 	openclDeviceData *deviceData = (openclDeviceData *) task->getDeviceData();
 	delete deviceData;
-	
+
 	if (task->markAsFinished(_device->getComputePlace())) {
 		DataAccessRegistration::unregisterTaskDataAccesses(task, _device->getComputePlace(), _device->getComputePlace()->getDependencyData());
-		
+
 		if (task->markAsReleased()) {
 			TaskFinalization::disposeOrUnblockTask(task, _device->getComputePlace());
 		}
@@ -77,23 +77,23 @@ void openclPollingService::launchTask(Task *task)
 {
 	assert(_device != nullptr);
 	assert(task != nullptr);
-	
-	openclProgram(_device->getIndex());
-	
+
+	openclProgram(_device);
+
 	openclDeviceData *deviceData = new openclDeviceData();
 	task->setDeviceData((void *) deviceData);
-	
-	CUDAComputePlace *computePlace = _device->getComputePlace();
+
+	openclComputePlace *computePlace = _device->getComputePlace();
 	assert(computePlace != nullptr);
-	
-	CUDAMemoryPlace *memoryPlace = _device->getMemoryPlace();
+
+	openclMemoryPlace *memoryPlace = _device->getMemoryPlace();
 	assert(memoryPlace != nullptr);
-	
+
 	task->setMemoryPlace(memoryPlace);
-	
+
 	computePlace->preRunTask(task);
 	memoryPlace->preRunTask(task);
-	
+
 	memoryPlace->runTask(task);
 	computePlace->runTask(task);
 }
@@ -102,14 +102,14 @@ void CUDAPollingService::run()
 {
 	// Discover finished kernels and free their dependencies
 	auto finishedTasks = _device->getComputePlace()->getListFinishedTasks();
-	
+
 	auto it = finishedTasks.begin();
 	while (it != finishedTasks.end()) {
 		finishTask(*it);
 		it = finishedTasks.erase(it);
 	}
 	assert(finishedTasks.empty());
-	
+
 	/* Check for ready tasks */
 	Task *task = Scheduler::getReadyTask(_device->getComputePlace());
 	while (task != nullptr) {
@@ -124,4 +124,3 @@ bool CUDAPollingService::runHelper(void *service_ptr)
 	service->run();
 	return false;
 }
-

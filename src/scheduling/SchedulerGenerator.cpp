@@ -1,6 +1,6 @@
 /*
 	This file is part of Nanos6 and is licensed under the terms contained in the COPYING file.
-	
+
 	Copyright (C) 2015-2017 Barcelona Supercomputing Center (BSC)
 */
 
@@ -24,6 +24,10 @@
 
 #if defined(USE_CUDA)
 #include "schedulers/cuda/CUDANaiveScheduler.hpp"
+#endif
+
+#if defined(USE_OPENCL)
+#include "schedulers/opencl/openclNaiveScheduler.hpp"
 #endif
 
 #include "SchedulerGenerator.hpp"
@@ -79,13 +83,33 @@ SchedulerInterface *SchedulerGenerator::createCUDAScheduler(
 	return nullptr;
 }
 
+/*
+ * When OpenCL is not available, createOpenclScheduler will return nullptr
+ */
+SchedulerInterface *SchedulerGenerator::createOpenclScheduler(
+	__attribute__((unused)) std::string const &schedulerName,
+	__attribute__((unused)) int nodeIndex
+) {
+#if defined(USE_OPENCL)
+	if (schedulerName == "default") {
+		return new openclNaiveScheduler(nodeIndex);
+	} else if (schedulerName == "naive"){
+		return new openclNaiveScheduler(nodeIndex);
+	} else {
+		std::cerr << "Warning: invalid scheduler name '" << schedulerName << "', using default instead." << std::endl;
+		return new opeclNaiveScheduler(nodeIndex);
+	}
+#endif
+	return nullptr;
+}
+
 
 // Get the Host scheduler
 // This is the scheduler that is called through the Scheduler class. Therefor, this is the initializer
 SchedulerInterface *SchedulerGenerator::createHostScheduler()
 {
 	EnvironmentVariable<std::string> schedulerName("NANOS6_SCHEDULER", "default");
-	
+
 	if (schedulerName.getValue() == "cluster-random") {
 		return new ClusterRandomScheduler();
 	} else if (schedulerName.getValue() == "cluster-locality") {
@@ -94,16 +118,16 @@ SchedulerInterface *SchedulerGenerator::createHostScheduler()
 		return new HostHierarchicalScheduler();
 	} else if (schedulerName.getValue() == "collapsable") {
 		_collapsable = true;
-		
+
 		SchedulerInterface *scheduler = nullptr;
-		
+
 		// Check if this scheduler level can be collapsed
 		if (HostHierarchicalScheduler::canBeCollapsed()) {
 			scheduler = createNUMAScheduler();
 		} else {
 			scheduler = new HostHierarchicalScheduler();
 		}
-		
+
 		return scheduler;
 	} else {
 		return createCPUScheduler(schedulerName.getValue(), -1);
@@ -115,14 +139,14 @@ SchedulerInterface *SchedulerGenerator::createHostScheduler()
 SchedulerInterface *SchedulerGenerator::createNUMAScheduler()
 {
 	SchedulerInterface *scheduler = nullptr;
-	
+
 	// Check if this scheduler level can be collapsed
 	if (_collapsable && NUMAHierarchicalScheduler::canBeCollapsed()) {
 		scheduler = createNUMANodeScheduler(-1);
 	} else {
 		scheduler = new NUMAHierarchicalScheduler();
 	}
-	
+
 	return scheduler;
 }
 
@@ -130,30 +154,32 @@ SchedulerInterface *SchedulerGenerator::createNUMAScheduler()
 SchedulerInterface *SchedulerGenerator::createNUMANodeScheduler(int nodeIndex)
 {
 	SchedulerInterface *scheduler = nullptr;
-	
+
 	// Check if this scheduler level can be collapsed
 	if (_collapsable && DeviceHierarchicalScheduler::canBeCollapsed()) {
 		scheduler = createDeviceScheduler(nodeIndex, nanos6_device_t::nanos6_host_device);
 	} else {
 		scheduler = new DeviceHierarchicalScheduler(nodeIndex);
 	}
-	
+
 	return scheduler;
 }
 
 
 SchedulerInterface *SchedulerGenerator::createDeviceScheduler(int nodeIndex, nanos6_device_t type)
 {
-	if (type == nanos6_device_t::nanos6_host_device) {	
+	if (type == nanos6_device_t::nanos6_host_device) {
 		EnvironmentVariable<std::string> schedulerName("NANOS6_CPU_SCHEDULER", "default");
 		return SchedulerGenerator::createCPUScheduler(schedulerName.getValue(), nodeIndex);
 	} else if (type == nanos6_device_t::nanos6_cuda_device) {
 		EnvironmentVariable<std::string> schedulerName("NANOS6_CUDA_SCHEDULER", "default");
 		return SchedulerGenerator::createCUDAScheduler(schedulerName.getValue(), nodeIndex);
-	} else {
+	} else if (type == nanos6_device_t::nanos6_opencl_device) {
+		EnvironmentVariable<std::string> schedulerName("NANOS6_OPENCL_SCHEDULER", "default");
+		return SchedulerGenerator::createOpenclScheduler(schedulerName.getValue(), nodeIndex);
+	}	else {
 		std::cerr << "Warning: invalid scheduler type '" << type << "', creating host scheduler instead." << std::endl;
 		EnvironmentVariable<std::string> schedulerName("NANOS6_CPU_SCHEDULER", "default");
 		return SchedulerGenerator::createCPUScheduler(schedulerName.getValue(), nodeIndex);
 	}
 }
-

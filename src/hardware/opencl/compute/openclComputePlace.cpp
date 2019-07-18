@@ -2,8 +2,8 @@
         This file is part of Nanos6 and is licensed under the terms contained in the COPYING file.
 
         Copyright (C) 2018 Barcelona Supercomputing Center (BSC)
-	
-	Author: Xavier Carril
+
+				Author: Xavier Carril
 */
 
 #include "openclComputePlace.hpp"
@@ -88,5 +88,3 @@ void openclComputePlace::postRunTask(Task *task)
 
         _queuePool.returnQueue(taskData->_queue);
 }
-
-
