@@ -55,6 +55,7 @@ nanos6include_HEADERS = \
 	api/nanos6/library-mode.h \
 	api/nanos6/major.h \
 	api/nanos6/monitoring.h \
+	api/nanos6/opencl_device.h \
 	api/nanos6/polling.h \
 	api/nanos6/reductions.h \
 	api/nanos6/runtime-info.h \
@@ -123,7 +124,7 @@ libnanos6_main_wrapper_a_SOURCES = \
 	loader/main-wrapper.c \
 	loader/main-wrapper.h
 
-libnanos6_main_wrapper_a_CPPFLAGS = $(CUDA_CFLAGS) $(MPI_CXXFLAGS) $(MCMODEL_FLAGS)
+libnanos6_main_wrapper_a_CPPFLAGS = $(CUDA_CFLAGS) $(MPI_CXXFLAGS) $(MCMODEL_FLAGS) $(OPENCL_CFLAGS)
 
 
 nanos6-main-wrapper.o: libnanos6-main-wrapper.a
@@ -137,7 +138,7 @@ libnanos6_library_mode_a_SOURCES = \
 	loader/device_strings.c \
 	loader/library-mode-init.c
 
-libnanos6_library_mode_a_CPPFLAGS = $(CUDA_CFLAGS) $(MPI_CXXFLAGS) $(MCMODEL_FLAGS)
+libnanos6_library_mode_a_CPPFLAGS = $(CUDA_CFLAGS) $(MPI_CXXFLAGS) $(MCMODEL_FLAGS) $(OPENCL_CFLAGS)
 
 
 nanos6-library-mode.o: libnanos6-library-mode.a
@@ -219,7 +220,7 @@ libnanos6_la_SOURCES = \
 	loader/loader.c \
 	loader/loader.h
 
-libnanos6_la_CPPFLAGS = -DSONAME_MAJOR=\"$(lib_major)\" -DSONAME_SUFFIX=\"$(lib_suffix)\" $(CUDA_CFLAGS) $(MPI_CXXFLAGS)
+libnanos6_la_CPPFLAGS = -DSONAME_MAJOR=\"$(lib_major)\" -DSONAME_SUFFIX=\"$(lib_suffix)\" $(CUDA_CFLAGS) $(MPI_CXXFLAGS) $(OPENCL_CFLAGS)
 libnanos6_la_LDFLAGS = $(AM_LDFLAGS) $(PTHREAD_CFLAGS) $(PTHREAD_LIBS) $(DLOPEN_LIBS) $(LDFLAGS_NOUNDEFINED)
 
 
@@ -376,6 +377,17 @@ cuda_sources = \
 
 if USE_CUDA
 common_sources += $(cuda_sources)
+endif
+
+opencl_sources = \
+	src/executors/opencl/openclPollingService.cpp \
+	src/hardware/opencl/openclInfo.cpp \
+	src/hardware/opencl/compute/openclComputePlace.cpp \
+	src/hardware/opencl/memory/openclMemoryPlace.cpp \
+	src/scheduling/schedulers/opencl/openclNaiveScheduler.cpp 
+
+if USE_OPENCL
+common_sources += $(opencl_sources)
 endif
 
 cluster_sources =
@@ -732,6 +744,7 @@ noinst_HEADERS = \
 	src/dependencies/linear-regions/LinearRegionMapImplementation.hpp \
 	src/dependencies/linear-regions/MultidimensionalAPI.hpp \
 	src/executors/cuda/CUDAPollingService.hpp \
+	src/executors/opencl/openclPollingService.hpp \
 	src/executors/threads/CPU.hpp \
 	src/executors/threads/CPUActivation.hpp \
 	src/executors/threads/CPUManager.hpp \
@@ -762,6 +775,15 @@ noinst_HEADERS = \
 	src/hardware/cuda/compute/synchronization/CUDAEvent.hpp \
 	src/hardware/cuda/compute/synchronization/CUDAEventPool.hpp \
 	src/hardware/cuda/memory/CUDAMemoryPlace.hpp \
+	src/hardware/opencl/openclDevice.hpp \
+	src/hardware/opencl/openclInfo.hpp \
+	src/hardware/opencl/openclProgram.hpp \
+	src/hardware/opencl/compute/openclComputePlace.hpp \
+	src/hardware/opencl/compute/queue/openclQueue.hpp \
+	src/hardware/opencl/compute/queue/openclQueuePool.hpp \
+	src/hardware/opencl/compute/synchronization/openclEvent.hpp \
+	src/hardware/opencl/compute/synchronization/openclEventPool.hpp \
+	src/hardware/opencl/memory/openclMemoryPlace.hpp \
 	src/hardware/HardwareInfo.hpp \
 	src/hardware/hwinfo/DeviceInfo.hpp \
 	src/hardware/hwinfo/HostInfo.hpp \
@@ -1008,6 +1030,7 @@ noinst_HEADERS = \
 	src/lowlevel/cuda/CUDAErrorHandler.hpp \
 	src/lowlevel/cxx/SpinLockImplementation.hpp \
 	src/lowlevel/mpi/MPIErrorHandler.hpp \
+	src/lowlevel/opencl/opeclErrorHandler.hpp \
 	src/lowlevel/posix/SpinLockImplementation.hpp \
 	src/lowlevel/threads/ExternalThread.hpp \
 	src/lowlevel/threads/ExternalThreadGroup.hpp \
@@ -1068,6 +1091,7 @@ noinst_HEADERS = \
 	src/scheduling/schedulers/cluster/ClusterLocalityScheduler.hpp \
 	src/scheduling/schedulers/cluster/ClusterRandomScheduler.hpp \
 	src/scheduling/schedulers/cuda/CUDANaiveScheduler.hpp \
+	src/scheduling/schedulers/opencl/openclNaiveScheduler.hpp \
 	src/support/ConcurrentUnorderedList.hpp \
 	src/support/ConstPropagator.hpp \
 	src/support/GenericFactory.hpp \
@@ -1108,8 +1132,8 @@ EXTRA_DIST += \
 	tests/tap-driver.pl \
 	tests/tap-driver.sh
 
-common_libnanos6_cppflags = $(BOOST_CPPFLAGS) -DBOOST_ENABLE_ASSERT_DEBUG_HANDLER $(PTHREAD_CFLAGS) $(hwloc_CFLAGS) $(libnuma_CPPFLAGS) $(CUDA_CFLAGS) $(MPI_CXXFLAGS) $(memkind_CPPFLAGS) $(cluster_cppflags) $(workflow_cppflags) $(chronometers_CPPFLAGS) $(monitoring_CPPFLAGS) $(hw_monitoring_CPPFLAGS)
-common_libnanos6_ldflags = $(AM_LDFLAGS) $(BOOST_LDFLAGS) -version-info $(lib_current):$(lib_revision):$(lib_age) $(PTHREAD_CFLAGS) $(PTHREAD_LIBS) $(LDFLAGS_NOUNDEFINED) $(hwloc_LIBS) $(libnuma_LIBS) $(DLOPEN_LIBS) $(CUDA_LIBS) $(MPI_CXXLDFLAGS) $(memkind_LIBS) $(hw_monitoring_LDFLAGS)
+common_libnanos6_cppflags = $(BOOST_CPPFLAGS) -DBOOST_ENABLE_ASSERT_DEBUG_HANDLER $(PTHREAD_CFLAGS) $(hwloc_CFLAGS) $(libnuma_CPPFLAGS) $(CUDA_CFLAGS) $(OPENCL_CFLAGS) $(MPI_CXXFLAGS) $(memkind_CPPFLAGS) $(cluster_cppflags) $(workflow_cppflags) $(chronometers_CPPFLAGS) $(monitoring_CPPFLAGS) $(hw_monitoring_CPPFLAGS)
+common_libnanos6_ldflags = $(AM_LDFLAGS) $(BOOST_LDFLAGS) -version-info $(lib_current):$(lib_revision):$(lib_age) $(PTHREAD_CFLAGS) $(PTHREAD_LIBS) $(LDFLAGS_NOUNDEFINED) $(hwloc_LIBS) $(libnuma_LIBS) $(DLOPEN_LIBS) $(CUDA_LIBS) $(OPENCL_LIBS) $(MPI_CXXLDFLAGS) $(memkind_LIBS) $(hw_monitoring_LDFLAGS)
 
 
 # This is needed for debuggable spinlocks
