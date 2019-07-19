@@ -265,6 +265,22 @@ if test x"${ac_use_cuda}" = x"yes" ; then
 	AC_DEFINE([USE_CUDA], [1], [Define if CUDA is enabled.])
 fi
 
+AC_ARG_ENABLE([opencl], [AS_HELP_STRING([--enable-opencl], [Enable OpenCL task support])])
+
+
+if test x"${enable_opencl}" = x"yes" ; then
+	# One of the following two header files has to exist
+	AC_CHECK_HEADERS([CL/opencl.h OpenCL/opencl.h], [ac_use_opencl=yes; break], [ac_use_opencl=no])
+else
+	ac_use_opencl=no
+fi
+AM_CONDITIONAL([USE_OPENCL], [test x${ac_use_opencl} = x"yes"])
+
+if test x"${ac_use_opencl}" = x"yes" ; then
+	AC_DEFINE([USE_OPENCL], [1], [Define if OpenCL is enabled.])
+fi
+
+
 # Check support for Cluster
 AC_ARG_ENABLE([cluster],
 	[AS_HELP_STRING([--enable-cluster],
@@ -459,6 +475,17 @@ if test x"${ac_use_cuda}" = x"yes" ; then
 else
 	AC_MSG_RESULT([no])
 fi
+
+_AS_ECHO([])
+_AS_ECHO_N([   OpenCL is enabled... ])
+if test x"${ac_use_opencl}" = x"yes" ; then
+	AC_MSG_RESULT([yes])
+	_AS_ECHO([	OPENCL CFLAGS... ${OPENCL_CFLAGS}])
+	_AS_ECHO([	OPENCL LIBS... ${OPENCL_LIBS}])
+else
+	AC_MSG_RESULT([no])
+fi
+
 
 _AS_ECHO([])
 _AS_ECHO_N([   Cluster support is enabled... ])
