@@ -9,14 +9,12 @@
 #ifndef OPENCL_PROGRAM_HPP
 #define OPENCL_PROGRAM_HPP
 
-#ifdef HAVE_OPENCL_OPENCL_H
+#ifdef HAVE_OPENCL_CL_HPP
 #include <OpenCL/cl.hpp>
-#include <OpenCL/opencl.h>
 #endif
 
-#ifdef HAVE_CL_OPENCL_H
+#ifdef HAVE_CL_CL_HPP
 #include <CL/cl.hpp>
-#include <CL/opencl.h>
 #endif
 
 #include<string>
@@ -29,7 +27,7 @@ private:
 	cl::Context _context;
 public:
 
-  openclProgram(/*const std::string& file,*/ openclDevice device): _program
+  openclProgram(/*const std::string& file,*/ cl::Device device): _device(device)
   {
 		cl_int err;
 		/*std::vector<cl::Platform> platforms;
@@ -42,17 +40,21 @@ public:
 		err = platform.getDevices(CL_DEVICE_TYPE_GPU, &devices);
 		openclErrorHandler::handle(err, "When getting devices");*/
 
-		_device = device.getDevice();
+		//_device = device;
 
 		//Temporal
-		std::string file = "kernel.cl";
-		std::istream kernelFile(file);
+		//std::string file = "kernel.cl";
+		//std::istream kernelFile(&file);
+		//std::istream kernelFile = new std::istream(file);
+		std::filebuf file;
+		file.open("kernel.cl", std::ios::in);
+		std::istream kernelFile(&file);
 		std::string src(std::istreambuf_iterator<char>(kernelFile), (std::istreambuf_iterator<char>()));
 
 		cl::Program::Sources sources(1, std::make_pair(src.c_str(), src.length() + 1));
 
-		_context = new cl::Context(_device);
-		_program = new cl::Program(context, sources);
+		_context = cl::Context(_device);
+		_program = cl::Program(_context, sources);
 
 		err = _program.build("-cl-std=CL1.2");
 		openclErrorHandler::handle(err, "When building program");
@@ -61,7 +63,8 @@ public:
 	~openclProgram()
 	{
 		cl_int err;
-		err = clReleaseProgram(_program);
+		cl_program pr = _program();
+		err = clReleaseProgram(pr);
 		openclErrorHandler::handle(err, "When destroying program");
 	}
 

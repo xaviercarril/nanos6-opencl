@@ -64,7 +64,7 @@ typedef struct {
 	enum nanos6_library_mode_api_t library_mode_api_version;
 	enum nanos6_locking_api_t locking_api_version;
 	enum nanos6_monitoring_api_t monitoring_api_version;
-	enum nanos6_opencl_device_api_t  nanos6_opencl_device_api_version;
+	enum nanos6_opencl_device_api_t  opencl_device_api_version;
 	enum nanos6_polling_api_t polling_api_version;
 	enum nanos6_task_constraints_api_t task_constraints_api_version;
 	enum nanos6_task_execution_api_t task_execution_api_version;

@@ -9,17 +9,17 @@
 #ifndef OPENCL_QUEUE_HPP
 #define OPENCL_QUEUE_HPP
 
-#ifdef HAVE_OPENCL_OPENCL_H
-#include <OpenCL/opencl.h>
+#ifdef HAVE_OPENCL_CL_HPP
+#include <OpenCL/cl.hpp>
 #endif
 
-#ifdef HAVE_CL_OPENCL_H
-#include <CL/opencl.h>
+#ifdef HAVE_CL_CL_HPP
+#include <CL/cl.hpp>
 #endif
 
 #include "lowlevel/opencl/openclErrorHandler.hpp"
 
-class openclComputePlace;
+//class openclComputePlace;
 
 class openclQueue {
 
@@ -31,7 +31,7 @@ public:
 	openclQueue(cl_context context, cl_device_id device, size_t index): _index(index)
 	{
 		cl_int err;
-		_queue = clCreateCommandQueue(context, device_id, 0, &err);
+		_queue = clCreateCommandQueue(context, device, 0, &err);
 		openclErrorHandler::handle(err, "When creating queue");
 	}
 
@@ -77,7 +77,7 @@ public:
 	{
 		return _queue;
 	}
-	
+
 	//! \brief Get the assigned index of the queue
         size_t getIndex() const
         {

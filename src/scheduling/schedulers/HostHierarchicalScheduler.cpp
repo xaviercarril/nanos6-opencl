@@ -24,7 +24,6 @@ HostHierarchicalScheduler::HostHierarchicalScheduler()
 	_CUDAScheduler = SchedulerGenerator::createDeviceScheduler(0, nanos6_device_t::nanos6_cuda_device);
 	RuntimeInfo::addEntry("cuda-scheduler", "CUDA Scheduler", _CUDAScheduler->getName());
 #endif //USE_CUDA
-}
 
 #ifdef USE_OPENCL
 	_OPENCLScheduler = SchedulerGenerator::createDeviceScheduler(0, nanos6_device_t::nanos6_opencl_device);

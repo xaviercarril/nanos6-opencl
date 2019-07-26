@@ -3,13 +3,14 @@
 
 #include "openclDevice.hpp"
 #include "hardware/hwinfo/DeviceInfo.hpp"
+#include "executors/opencl/openclPollingService.hpp"
 
-#ifdef HAVE_OPENCL_OPENCL_H
-#include <OpenCL/opencl.h>
+#ifdef HAVE_OPENCL_CL_HPP
+#include <OpenCL/cl.hpp>
 #endif
 
-#ifdef HAVE_CL_OPENCL_H
-#include <CL/opencl.h>
+#ifdef HAVE_CL_CL_HPP
+#include <CL/cl.hpp>
 #endif
 
 #include <vector>
@@ -18,7 +19,7 @@
 class openclInfo: public DeviceInfo {
 private:
         std::vector<openclDevice *> _devices;
-	std::vector<openclPollingService *> _pollingServices;
+	      std::vector<openclPollingService *> _pollingServices;
 public:
 
         void initialize();

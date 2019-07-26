@@ -9,17 +9,16 @@
 #ifndef OPENCL_EVENT
 #define OPENCL_EVENT
 
-#ifdef HAVE_OPENCL_OPENCL_H
+#ifdef HAVE_OPENCL_CL_HPP
 #include <OpenCL/cl.hpp>
-#include <OpenCL/opencl.h>
 #endif
 
-#ifdef HAVE_CL_OPENCL_H
+#ifdef HAVE_CL_CL_HPP
 #include <CL/cl.hpp>
-#include <CL/opencl.h>
 #endif
 
 #include <iostream>
+
 
 #include "lowlevel/opencl/openclErrorHandler.hpp"
 #include "tasks/TaskDeviceData.hpp"
@@ -49,7 +48,7 @@ public:
         {
                 _task = task;
         }
-	Task *getTask()
+	      Task *getTask()
         {
                 return _task;
         }
@@ -66,7 +65,7 @@ public:
 		            cl_int status;
                 cl_int err = clGetEventInfo(_event, CL_EVENT_COMMAND_EXECUTION_STATUS, sizeof(cl_int), &status, nullptr);
                 openclErrorHandler::handle(err, "When checking event status");
-		            return openclErrorHandlerEvent::handleEvent(status, "Status Error");
+		            return openclErrorHandler::handleEvent(status, "Status Error");
         }
 
 };

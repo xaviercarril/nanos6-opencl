@@ -7,24 +7,22 @@
 #ifndef OPENCL_FATAL_ERROR_HANDLER_HPP
 #define OPENCL_FATAL_ERROR_HANDLER_HPP
 
-#ifdef HAVE_OPENCL_OPENCL_H
-#include <OpenCL/opencl.h>
+#ifdef HAVE_OPENCL_CL_HPP
+#include <OpenCL/cl.hpp>
 #endif
 
-#ifdef HAVE_CL_OPENCL_H
-#include <CL/opencl.h>
-#endif
+//#ifdef HAVE_CL_CL_HPP
+#include <CL/cl.hpp>
+//#endif
 
 #include "lowlevel/FatalErrorHandler.hpp"
 
 class openclErrorHandler: public FatalErrorHandler {
 private:
-	#ifdef __cplusplus
-	extern "C" {
-	#endif
-	const char *getErrorString(cl_int error)
-	{
-	switch(error){
+
+		static std::string getErrorString(cl_int error)
+		{
+			switch(error) {
     		// run-time and JIT compiler errors
     		case 0: return "CL_SUCCESS";
     		case -1: return "CL_DEVICE_NOT_FOUND";
@@ -97,9 +95,6 @@ private:
     		case -1005: return "CL_D3D10_RESOURCE_NOT_ACQUIRED_KHR";
     		default: return "Unknown OpenCL error";
     	}
-	#ifdef __cplusplus
-	}
-	#endif
 	}
 	static inline void printOpenCL_Error(cl_int err, std::ostringstream &oss)
 	{
@@ -112,7 +107,7 @@ public:
 	template<typename... TS>
 	static inline void handle(cl_int err, TS... reasonParts)
 	{
-		if (__builtin_expect(err == CL_SUCCES, 1)) {
+		if (__builtin_expect(err == CL_SUCCESS, 1)) {
 			return;
 		}
 
@@ -137,8 +132,9 @@ public:
 	template<typename... TS>
 	static inline bool handleEvent(cl_int err, TS... reasonParts)
 	{
-		if (__builtin_expect(err == CL_QUEUED || err = CL_SUBMITTED || err == CL_RUNNING || err == CL_SUCCES, 1)) {
-			if (err == CL_SUCCES) {
+		// std::string errName = getErrorString(err);
+		if (__builtin_expect(err == CL_QUEUED || err == CL_SUBMITTED || err == CL_RUNNING || err == CL_SUCCESS, 1)) {
+			if (err == CL_SUCCESS) {
 				return true;
 			} else {
 				return false;

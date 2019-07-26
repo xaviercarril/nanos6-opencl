@@ -21,14 +21,12 @@
 
 #include "executors/threads/TaskFinalization.hpp"
 
-#ifdef HAVE_OPENCL_OPENCL_H
+#ifdef HAVE_OPENCL_CL_HPP
 #include <OpenCL/cl.hpp>
-#include <OpenCL/opencl.h>
 #endif
 
-#ifdef HAVE_CL_OPENCL_H
+#ifdef HAVE_CL_CL_HPP
 #include <CL/cl.hpp>
-#include <CL/opencl.h>
 #endif
 
 openclPollingService::openclPollingService(openclDevice *device)
@@ -78,7 +76,7 @@ void openclPollingService::launchTask(Task *task)
 	assert(_device != nullptr);
 	assert(task != nullptr);
 
-	openclProgram(_device);
+	openclProgram(_device->getDevice());
 
 	openclDeviceData *deviceData = new openclDeviceData();
 	task->setDeviceData((void *) deviceData);
@@ -98,7 +96,7 @@ void openclPollingService::launchTask(Task *task)
 	computePlace->runTask(task);
 }
 
-void CUDAPollingService::run()
+void openclPollingService::run()
 {
 	// Discover finished kernels and free their dependencies
 	auto finishedTasks = _device->getComputePlace()->getListFinishedTasks();
@@ -118,9 +116,9 @@ void CUDAPollingService::run()
 	}
 }
 
-bool CUDAPollingService::runHelper(void *service_ptr)
+bool openclPollingService::runHelper(void *service_ptr)
 {
-	CUDAPollingService *service = (CUDAPollingService *) service_ptr;
+	openclPollingService *service = (openclPollingService *) service_ptr;
 	service->run();
 	return false;
 }

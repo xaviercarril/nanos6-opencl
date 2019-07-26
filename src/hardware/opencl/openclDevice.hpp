@@ -8,30 +8,36 @@
 
 #include "hardware/places/NUMAPlace.hpp"
 
+#ifdef HAVE_OPENCL_CL_HPP
+#include <OpenCL/cl.hpp>
+#endif
+
+#ifdef HAVE_CL_CL_HPP
+#include <CL/cl.hpp>
+#endif
+
 #include "openclProgram.hpp"
 #include <vector>
 
 
 class openclDevice {
 private:
-        openclComputePlace * _computePlace;               //!< ComputePlace associated to this device
-        openclMemoryPlace * _memoryPlace;                 //!< MemoryPlace associated to this device
+  openclComputePlace  * _computePlace;               //!< ComputePlace associated to this device
+  openclMemoryPlace * _memoryPlace;                 //!< MemoryPlace associated to this device
 
-        int _index;                                                     //!< Index of the OpenCL device
-        NUMAPlace *_numaPlace;                                  //!< NUMA node where this device is located
-	cl::Device _device;
-	openclProgram _program;
+  int _index;                                                     //!< Index of the OpenCL device
+  NUMAPlace *_numaPlace;                                  //!< NUMA node where this device is located
+  cl::Device _device;
+  openclProgram * _program;
+
 public:
+  openclDevice(int index, cl::Device device) : _index(index), _device(device)
+  {
+    _computePlace = new openclComputePlace(index);
+    _memoryPlace = new openclMemoryPlace(index);
 
-        openclDevice(int index, cl::Device device) :
-                _index(index)
-        {
-                _computePlace = new openclComputePlace(index);
-                _memoryPlace = new openclMemoryPlace(index);
-
-		_device = device;
-		_program = new openclProgram(this);
-        }
+    _program = new openclProgram(device);
+  }
 
 	~openclDevice()
 	{
@@ -40,12 +46,12 @@ public:
 		delete _memoryPlace;
 	}
 
-        CUDAComputePlace *getComputePlace() const
+        openclComputePlace *getComputePlace() const
         {
                 return _computePlace;
         }
 
-        CUDAMemoryPlace *getMemoryPlace() const
+        openclMemoryPlace *getMemoryPlace() const
         {
                 return _memoryPlace;
         }
@@ -59,7 +65,7 @@ public:
         {
                 return _numaPlace;
         }
-		
+
 	cl::Device getDevice() const
 	{
 		return _device;

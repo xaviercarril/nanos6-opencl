@@ -3,7 +3,7 @@
 
         Copyright (C) 2018 Barcelona Supercomputing Center (BSC)
 
-				Author: Xavier Carril
+	Author: Xavier Carril
 */
 
 #include "openclComputePlace.hpp"
@@ -14,21 +14,9 @@
 
 #include <nanos6/opencl_device.h>
 
-#ifndef NDEBUG
-#ifdef HAVE_OPENCL_OPENCL_H
-#include <OpenCL/opencl.h>
-#include <OpenCL/cl.hpp>
-#endif
-
-#ifdef HAVE_CL_OPENCL_H
-#include <CL/opencl.h>
-#include <CL/cl.hpp>
-#endif
-#endif
-
-openclComputePlace::openclComputePlace(int device)
-        : ComputePlace(device, nanos6_device_t::nanos6_opencl_device)
+openclComputePlace::openclComputePlace(int device) : ComputePlace(device, nanos6_device_t::nanos6_opencl_device)
 {
+	_queuePool = new openclQueuePool(nullptr,nullptr);
 }
 
 openclComputePlace::~openclComputePlace()
@@ -64,7 +52,7 @@ void openclComputePlace::preRunTask(Task *task)
         openclDeviceData *taskData = (openclDeviceData *) task->getDeviceData();
 
         task->setComputePlace(this);
-        taskData->_queue = _queuePool.getQueue();
+        taskData->_queue = _queuePool->getQueue();
 }
 
 void openclComputePlace::runTask(Task *task)
@@ -86,5 +74,5 @@ void openclComputePlace::postRunTask(Task *task)
 {
         openclDeviceData *taskData = (openclDeviceData *) task->getDeviceData();
 
-        _queuePool.returnQueue(taskData->_queue);
+        _queuePool->returnQueue(taskData->_queue);
 }

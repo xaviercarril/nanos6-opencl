@@ -11,14 +11,14 @@
 
 #include "hardware/places/MemoryPlace.hpp"
 
-#ifdef HAVE_OPENCL_OPENCL_H
+#ifdef HAVE_OPENCL_CL_HPP
 #include <OpenCL/cl.hpp>
-#include <OpenCL/opencl.h>
+#include <OpenCL/cl.hpp>
 #endif
 
-#ifdef HAVE_CL_OPENCL_H
+#ifdef HAVE_CL_CL_HPP
 #include <CL/cl.hpp>
-#include <CL/opencl.h>
+#include <CL/cl.hpp>
 #endif
 
 class Task;

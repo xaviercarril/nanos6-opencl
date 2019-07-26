@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 #	This file is part of Nanos6 and is licensed under the terms contained in the COPYING file.
-#	
+#
 #	Copyright (C) 2015-2019 Barcelona Supercomputing Center (BSC)
 
 AC_PREREQ([2.69])
@@ -270,7 +270,12 @@ AC_ARG_ENABLE([opencl], [AS_HELP_STRING([--enable-opencl], [Enable OpenCL task s
 
 if test x"${enable_opencl}" = x"yes" ; then
 	# One of the following two header files has to exist
-	AC_CHECK_HEADERS([CL/opencl.h OpenCL/opencl.h], [ac_use_opencl=yes; break], [ac_use_opencl=no])
+	AC_CHECK_HEADERS([CL/opencl.h OpenCL/opencl.h], [ac_use_opencl=yes], [ac_use_opencl=no; break])
+	AC_LANG_PUSH(C++)
+	AC_CHECK_HEADERS([CL/cl.hpp OpenCL/cl.hpp], [ac_use_opencl=yes], [ac_use_opencl=no])
+	AC_LANG_POP(C++)
+	AC_CHECK_LIB([OpenCL], [clGetDeviceIDs], [OPENCL_LIBS="${OPENCL_LIBS} -lOpenCL"; ac_use_opencl=yes; break], [ac_use_opencl=no])
+	AC_SUBST(OPENCL_LIBS)
 else
 	ac_use_opencl=no
 fi
@@ -544,4 +549,3 @@ if test x"${ac_use_pqos}" = x"yes" ; then
 else
 	AC_MSG_RESULT([no])
 fi
-

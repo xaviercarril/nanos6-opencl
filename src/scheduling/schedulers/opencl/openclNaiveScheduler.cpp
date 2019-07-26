@@ -19,7 +19,7 @@ openclNaiveScheduler::openclNaiveScheduler(__attribute__((unused)) int numaNodeI
 {
 	// Populate idle queues
 	for (unsigned int i = 0; i < HardwareInfo::getComputePlaceCount(nanos6_device_t::nanos6_opencl_device); ++i) {
-		opeclComputePlace *gpu = (openclComputePlace *) HardwareInfo::getComputePlace(nanos6_device_t::nanos6_opencl_device, i);
+		openclComputePlace *gpu = (openclComputePlace *) HardwareInfo::getComputePlace(nanos6_device_t::nanos6_opencl_device, i);
 		_idleGpus.push_back(gpu);
 	}
 }

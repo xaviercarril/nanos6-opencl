@@ -97,7 +97,7 @@ SchedulerInterface *SchedulerGenerator::createOpenclScheduler(
 		return new openclNaiveScheduler(nodeIndex);
 	} else {
 		std::cerr << "Warning: invalid scheduler name '" << schedulerName << "', using default instead." << std::endl;
-		return new opeclNaiveScheduler(nodeIndex);
+		return new openclNaiveScheduler(nodeIndex);
 	}
 #endif
 	return nullptr;

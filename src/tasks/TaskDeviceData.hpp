@@ -1,6 +1,6 @@
 /*
 	This file is part of Nanos6 and is licensed under the terms contained in the COPYING file.
-	
+
 	Copyright (C) 2018 Barcelona Supercomputing Center (BSC)
 */
 
@@ -16,7 +16,7 @@
 
 struct CUDADeviceData {
 	CUDAStream *_stream;
-	
+
 	CUDADeviceData():
 		_stream(nullptr)
 	{
@@ -32,9 +32,9 @@ struct CUDADeviceData {
 
 struct openclDeviceData {
 	openclQueue *_queue;
-	
+
 	openclDeviceData():
-		_queue(nullptr,nullptr,nullptr)
+		_queue(nullptr)
 	{
 	}
 };
@@ -42,4 +42,3 @@ struct openclDeviceData {
 #endif //USE_OPENCL
 
 #endif //TASK_DEVICE_DATA_HPP
-

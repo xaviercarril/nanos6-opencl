@@ -63,3 +63,5 @@ public:
                 _pool.push(queue);
         }
 };
+
+#endif //OPENCL_QUEUE_POOL_HPP
