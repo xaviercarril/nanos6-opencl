@@ -30,7 +30,7 @@ private:
         using openclEventList = std::vector<openclEvent *>;
 
         openclQueuePool * _queuePool;
-        openclEventPool _eventPool;
+        openclEventPool * _eventPool;
 
         openclEventList _activeEvents;
 

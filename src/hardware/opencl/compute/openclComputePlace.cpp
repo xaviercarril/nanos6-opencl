@@ -17,6 +17,7 @@
 openclComputePlace::openclComputePlace(int device) : ComputePlace(device, nanos6_device_t::nanos6_opencl_device)
 {
 	_queuePool = new openclQueuePool(nullptr,nullptr);
+	_eventPool = new openclEventPool();
 }
 
 openclComputePlace::~openclComputePlace()
@@ -35,7 +36,7 @@ openclComputePlace::openclTaskList openclComputePlace::getListFinishedTasks()
                 if ((*it)->finished()) {
                         openclEvent* evt = *it;
 
-                        _eventPool.returnEvent(evt);
+                        _eventPool->returnEvent(evt);
                         finishedTasks.push_back(evt->getTask());
 
                         it = _activeEvents.erase(it);
@@ -64,7 +65,7 @@ void openclComputePlace::runTask(Task *task)
 
         task->body((void *) &env);
 
-        openclEvent *event = _eventPool.getEvent();
+        openclEvent *event = _eventPool->getEvent();
         event->setTask(task);
         event->record();
         _activeEvents.push_back(event);

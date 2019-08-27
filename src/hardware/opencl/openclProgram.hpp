@@ -20,6 +20,9 @@
 #include<string>
 #include<fstream>
 
+#include<iostream>
+using namespace std;
+
 class openclProgram {
 private:
 	cl::Program _program;
@@ -55,7 +58,8 @@ public:
 
 		_context = cl::Context(_device);
 		_program = cl::Program(_context, sources);
-
+		
+		cout << "Building Program" << cout;
 		err = _program.build("-cl-std=CL1.2");
 		openclErrorHandler::handle(err, "When building program");
 	}
