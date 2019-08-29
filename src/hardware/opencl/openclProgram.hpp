@@ -59,9 +59,14 @@ public:
 		_context = cl::Context(_device);
 		_program = cl::Program(_context, sources);
 		
-		cout << "Building Program" << cout;
-		err = _program.build("-cl-std=CL1.2");
-		openclErrorHandler::handle(err, "When building program");
+		cout << "Building Program" << endl;
+		//err = _program.build("");
+		//openclErrorHandler::handle(err, "When building program");
+		if (_program.build("-I.") != CL_SUCCESS)
+    		{
+        		std::cout << "Error building: " << _program.getBuildInfo<CL_PROGRAM_BUILD_LOG>(_device) << std::endl;
+        		exit(1);
+    		}
 	}
 
 	~openclProgram()

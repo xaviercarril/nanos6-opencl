@@ -21,10 +21,15 @@ private:
         std::queue<openclQueue *> _pool;
         int _size;
 
+	cl_context _context;
+	cl_device_id _device;
 public:
 
 	openclQueuePool(cl_context context, cl_device_id device)
         {
+		_context = context;
+		_device = device;
+
                 for (int i = 0; i < OPENCL_STARTING_QUEUE_NUM; ++i) {
                         _pool.push(new openclQueue(context, device, (cl_int) i));
                 }
@@ -49,8 +54,9 @@ public:
                 if (_pool.empty()) {
                         /*We need to create a program*/
 			//program = new openclProgram(...);
-                        // ++_size;
-                        // return new openclQueue(_size - 1);
+                        ++_size;
+			openclQueue *queue = new openclQueue(_context, _device, _size - 1);
+			return queue;
                 } else {
                         openclQueue *queue = _pool.front();
                         _pool.pop();

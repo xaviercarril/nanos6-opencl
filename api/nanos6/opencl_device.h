@@ -17,15 +17,15 @@
 //       That is:   nanos6_major_api . nanos6_opencl_device_api
 enum nanos6_opencl_device_api_t { nanos6_opencl_device_api = 1 };
 
-#ifdef HAVE_OPENCL_OPENCL_H
-#include <OpenCL/opencl.h>
+//#ifdef HAVE_OPENCL_OPENCL_H
+//#include <OpenCL/opencl.h>
 //#include <OpenCL/cl.hpp>
-#endif
+//#endif
 
-#ifdef HAVE_CL_OPENCL_H
+//#ifdef HAVE_CL_OPENCL_H
 #include <CL/opencl.h>
 //#include <CL/cl.hpp>
-#endif
+//#endif
 
 #ifdef __cplusplus
 extern "C" {

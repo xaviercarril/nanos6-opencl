@@ -99,7 +99,7 @@ private:
 	static inline void printOpenCL_Error(cl_int err, std::ostringstream &oss)
 	{
 		std::string errName = getErrorString(err);
-		oss << errName;
+		oss << errName << " ";
 	}
 
 public:
