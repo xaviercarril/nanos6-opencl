@@ -76,8 +76,6 @@ void openclPollingService::launchTask(Task *task)
 	assert(_device != nullptr);
 	assert(task != nullptr);
 
-	openclProgram(_device->getDevice());
-
 	openclDeviceData *deviceData = new openclDeviceData();
 	task->setDeviceData((void *) deviceData);
 

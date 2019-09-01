@@ -14,10 +14,12 @@
 
 #include <nanos6/opencl_device.h>
 
-openclComputePlace::openclComputePlace(int device) : ComputePlace(device, nanos6_device_t::nanos6_opencl_device)
+openclComputePlace::openclComputePlace(int index_device, cl::Context context, cl::Device device) : ComputePlace(index_device, nanos6_device_t::nanos6_opencl_device)
 {
-	_queuePool = new openclQueuePool(nullptr,nullptr);
+	_queuePool = new openclQueuePool(context, device);
 	_eventPool = new openclEventPool();
+
+	_index = index_device;
 }
 
 openclComputePlace::~openclComputePlace()
@@ -61,7 +63,9 @@ void openclComputePlace::runTask(Task *task)
         openclDeviceData *taskData = (openclDeviceData *) task->getDeviceData();
 
         nanos6_opencl_device_environment_t env;
-        env.queue = taskData->_queue->getQueue();
+	cl::CommandQueue commandqueue = taskData->_queue->getQueue();
+	//Wrapper operator ()() returns cl_type. In this case cl_command_queue 
+        env.queue = commandqueue();
 
         task->body((void *) &env);
 

@@ -25,13 +25,15 @@ class openclQueue {
 
 private:
 	size_t _index;
-	cl_command_queue _queue;
+	//cl_command_queue _queue;
+	cl::CommandQueue _queue;
 
 public:
-	openclQueue(cl_context context, cl_device_id device, size_t index): _index(index)
+	openclQueue(cl::Context context, cl::Device device, size_t index): _index(index)
 	{
 		cl_int err;
-		_queue = clCreateCommandQueue(context, device, 0, &err);
+		//_queue = clCreateCommandQueue(context, device, 0, &err);
+		_queue = cl::CommandQueue(context, device, 0, &err);
 		openclErrorHandler::handle(err, "When creating queue");
 	}
 
@@ -41,24 +43,26 @@ public:
 
 	~openclQueue()
 	{
-		cl_int err = clReleaseCommandQueue(_queue);
-		openclErrorHandler::handle(err, "When destroying queue");
+		//cl_int err = clReleaseCommandQueue(_queue);
+		//openclErrorHandler::handle(err, "When destroying queue");
 	}
 
 	// Get context
-	cl_context getContextQueue()
+	cl::Context getContextQueue()
 	{
-		cl_context ret;
-		cl_int err = clGetCommandQueueInfo(_queue, CL_QUEUE_CONTEXT, sizeof(cl_context), &ret, NULL);
+		cl::Context ret;
+		//cl_int err = clGetCommandQueueInfo(_queue, CL_QUEUE_CONTEXT, sizeof(cl_context), &ret, NULL);
+		cl_int err = _queue.getInfo(CL_QUEUE_CONTEXT, &ret);
 		openclErrorHandler::handle(err, "When getting context info queue");
 		return ret;
 	}
 
 	// Get device
-	cl_device_id getDeviceQueue()
+	cl::Device getDeviceQueue()
 	{
-		cl_device_id ret;
-		cl_int err = clGetCommandQueueInfo(_queue, CL_QUEUE_DEVICE, sizeof(cl_device_id), &ret, NULL);
+		cl::Device ret;
+		//cl_int err = clGetCommandQueueInfo(_queue, CL_QUEUE_DEVICE, sizeof(cl_device_id), &ret, NULL);
+		cl_int err = _queue.getInfo(CL_QUEUE_DEVICE, &ret);
 		openclErrorHandler::handle(err, "When getting device info queue");
 		return ret;
 	}
@@ -67,13 +71,14 @@ public:
 	cl_uint getReferenceCountQueue()
 	{
 		cl_uint ret;
-		cl_int err = clGetCommandQueueInfo(_queue, CL_QUEUE_REFERENCE_COUNT, sizeof(cl_uint), &ret, NULL);
+		//cl_int err = clGetCommandQueueInfo(_queue, CL_QUEUE_REFERENCE_COUNT, sizeof(cl_uint), &ret, NULL);
+		cl_int err = _queue.getInfo(CL_QUEUE_REFERENCE_COUNT, &ret);
 		openclErrorHandler::handle(err, "When getting reference count info queue");
 		return ret;
 	}
 
 	//! \brief Get the underlying openclQueue object
-	cl_command_queue getQueue() const
+	cl::CommandQueue getQueue() const
 	{
 		return _queue;
 	}

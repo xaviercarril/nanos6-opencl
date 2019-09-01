@@ -47,15 +47,10 @@ public:
         {
                 return _pollingServices[index];
         }
-
+/*
         static inline void setDevice(int device)
         {
 
-	}
-//FALTA ACABAR!!
-/*
-                cudaError_t err = cudaSetDevice(device);
-                CUDAErrorHandler::handle(err, "When setting CUDA device environment");
         }
 */
 };

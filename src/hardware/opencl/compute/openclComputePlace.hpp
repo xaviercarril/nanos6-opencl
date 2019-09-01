@@ -35,10 +35,12 @@ private:
         openclEventList _activeEvents;
 
         SpinLock _lock;
+
+	int _index;
 public:
         using openclTaskList = std::vector<Task*>;
 
-      	openclComputePlace(int device);
+      	openclComputePlace(int index_device, cl::Context context, cl::Device device);
         ~openclComputePlace();
 
         //! \brief Returns a list of tasks which kernels have finished

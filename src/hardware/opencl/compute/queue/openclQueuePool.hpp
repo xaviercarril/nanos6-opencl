@@ -21,11 +21,11 @@ private:
         std::queue<openclQueue *> _pool;
         int _size;
 
-	cl_context _context;
-	cl_device_id _device;
+	cl::Context _context;
+	cl::Device _device;
 public:
 
-	openclQueuePool(cl_context context, cl_device_id device)
+	openclQueuePool(cl::Context context, cl::Device device)
         {
 		_context = context;
 		_device = device;

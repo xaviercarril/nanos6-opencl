@@ -29,6 +29,7 @@ void openclInfo::initialize()
 		_devices[i] = new openclDevice(i, devices[i]);
 		_pollingServices[i] = new openclPollingService(_devices[i]);
 
+		cout << "Device Name: " << _devices[i]->getDeviceName() << endl;
 		_pollingServices[i]->start();
 	}
 }

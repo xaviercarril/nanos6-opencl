@@ -33,10 +33,10 @@ private:
 public:
   openclDevice(int index, cl::Device device) : _index(index), _device(device)
   {
-    _computePlace = new openclComputePlace(index);
-    _memoryPlace = new openclMemoryPlace(index);
-
     _program = new openclProgram(device);
+
+    _computePlace = new openclComputePlace(index, _program->getProgramContext(), _program->getProgramDevice());
+    _memoryPlace = new openclMemoryPlace(index);
   }
 
 	~openclDevice()
@@ -66,10 +66,17 @@ public:
                 return _numaPlace;
         }
 
-	cl::Device getDevice() const
-	{
-		return _device;
-	}
+      	cl::Device getDevice() const
+      	{
+      		return _device;
+      	}
+
+        std::string getDeviceName() const
+        {
+          std::string name;
+          cl_int err = _device.getInfo(CL_DEVICE_NAME, &name);
+          return name;
+        }
 };
 
 #endif //OPENCL_DEVICE_HPP

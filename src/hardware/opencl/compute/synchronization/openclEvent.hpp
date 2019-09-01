@@ -28,7 +28,7 @@ class openclEvent {
 
 private:
         Task *_task;
-        cl_event _event;
+        cl::UserEvent _userevent;
 
 public:
         openclEvent()
@@ -40,8 +40,8 @@ public:
 
         ~openclEvent()
         {
-                cl_int err = clReleaseEvent(_event);
-                openclErrorHandler::handle(err, "When destroying event");
+                //cl_int err = clReleaseEvent(_event);
+                //openclErrorHandler::handle(err, "When destroying event");
         }
 
         void setTask(Task *task)
@@ -55,17 +55,19 @@ public:
 
         void record()
         {
-		            cl_int err;
-                _event = clCreateUserEvent(((openclDeviceData *) _task->getDeviceData())->_queue->getContextQueue(), &err);
+		cl_int err;
+                //_event = clCreateUserEvent(((openclDeviceData *) _task->getDeviceData())->_queue->getContextQueue(), &err);
+		_userevent = cl::UserEvent(((openclDeviceData *) _task->getDeviceData())->_queue->getContextQueue(), &err);
                 openclErrorHandler::handle(err, "When recording event");
         }
 
         bool finished()
         {
-		            cl_int status;
-                cl_int err = clGetEventInfo(_event, CL_EVENT_COMMAND_EXECUTION_STATUS, sizeof(cl_int), &status, nullptr);
+		cl_int status;
+                //cl_int err = clGetEventInfo(_event, CL_EVENT_COMMAND_EXECUTION_STATUS, sizeof(cl_int), &status, nullptr);
+                cl_int err = _userevent.getInfo(CL_EVENT_COMMAND_EXECUTION_STATUS, &status);
                 openclErrorHandler::handle(err, "When checking event status");
-		            return openclErrorHandler::handleEvent(status, "Status Error");
+		return openclErrorHandler::handleEvent(status, "Status Error");
         }
 
 };
