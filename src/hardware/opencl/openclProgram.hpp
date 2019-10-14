@@ -59,7 +59,7 @@ public:
 		_context = cl::Context(_device);
 		_program = cl::Program(_context, sources);
 		
-		cout << "Building Program" << endl;
+		cout << "Building OpenCL Program" << endl;
 		//err = _program.build("");
 		//openclErrorHandler::handle(err, "When building program");
 		if (_program.build("-I.") != CL_SUCCESS)
@@ -67,6 +67,7 @@ public:
         		std::cout << "Error building: " << _program.getBuildInfo<CL_PROGRAM_BUILD_LOG>(_device) << std::endl;
         		exit(1);
     		}
+		cout << "Building Success!!" << endl;
 	}
 
 	~openclProgram()

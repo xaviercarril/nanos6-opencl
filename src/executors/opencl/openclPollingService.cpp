@@ -110,6 +110,7 @@ void openclPollingService::run()
 	Task *task = Scheduler::getReadyTask(_device->getComputePlace());
 	while (task != nullptr) {
 		launchTask(task);
+		finishTask(task); //This would not be here
 		task = Scheduler::getReadyTask(_device->getComputePlace());
 	}
 }

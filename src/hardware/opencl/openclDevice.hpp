@@ -35,7 +35,7 @@ public:
   {
     _program = new openclProgram(device);
 
-    _computePlace = new openclComputePlace(index, _program->getProgramContext(), _program->getProgramDevice());
+    _computePlace = new openclComputePlace(index, _program->getOpenCLProgram(), _program->getProgramContext(), _program->getProgramDevice());
     _memoryPlace = new openclMemoryPlace(index);
   }
 

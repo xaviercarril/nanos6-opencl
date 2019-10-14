@@ -49,25 +49,24 @@ public:
         //!     \!brief Get a Queue
         //!     Get a OpenCL Queue from the pool.
         //!     If no queues are available a new queue is returned, which will be eventually returned to the pool instead of released.
-        openclQueue *getQueue()
-        {
-                if (_pool.empty()) {
-                        /*We need to create a program*/
-			//program = new openclProgram(...);
-                        ++_size;
-			openclQueue *queue = new openclQueue(_context, _device, _size - 1);
-			return queue;
-                } else {
-                        openclQueue *queue = _pool.front();
-                        _pool.pop();
-                        return queue;
-                }
-        }
-        //!     \!brief Return a opencl queue to the pool
-        void returnQueue(openclQueue *queue)
-        {
-                _pool.push(queue);
-        }
+      openclQueue *getQueue()
+      {
+          if (_pool.empty()) {
+            ++_size;
+			      openclQueue *queue = new openclQueue(_context, _device, _size - 1);
+            return queue;
+          }
+          else {
+            openclQueue *queue = _pool.front();
+            _pool.pop();
+            return queue;
+          }
+      }
+      //!     \!brief Return a opencl queue to the pool
+      void returnQueue(openclQueue *queue)
+      {
+        _pool.push(queue);
+      }
 };
 
 #endif //OPENCL_QUEUE_POOL_HPP

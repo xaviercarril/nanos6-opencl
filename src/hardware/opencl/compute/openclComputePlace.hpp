@@ -36,11 +36,22 @@ private:
 
         SpinLock _lock;
 
-	int _index;
+				int _index;
+				cl::Program _program;
 public:
         using openclTaskList = std::vector<Task*>;
 
-      	openclComputePlace(int index_device, cl::Context context, cl::Device device);
+        cl_int err;
+
+				struct buffer_arg {
+						size_t size;
+						cl_mem_flags flags;
+						DataAccessType type;
+						void * startAddress;
+						cl::Buffer buffer;
+				};
+
+      	openclComputePlace(int index_device, cl::Program program, cl::Context context, cl::Device device);
         ~openclComputePlace();
 
         //! \brief Returns a list of tasks which kernels have finished
@@ -54,6 +65,8 @@ public:
 
         //! \brief Release the compute resources of the OpenCL task
         void postRunTask(Task *task);
+
+				cl_mem_flags accessType(DataAccessType type);
 };
 
 #endif //OPENCL_COMPUTE_PLACE_HPP

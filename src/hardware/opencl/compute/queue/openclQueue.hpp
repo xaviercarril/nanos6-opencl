@@ -19,13 +19,11 @@
 
 #include "lowlevel/opencl/openclErrorHandler.hpp"
 
-//class openclComputePlace;
-
 class openclQueue {
 
 private:
 	size_t _index;
-	//cl_command_queue _queue;
+	
 	cl::CommandQueue _queue;
 
 public:

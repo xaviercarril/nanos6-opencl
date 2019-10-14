@@ -34,8 +34,11 @@ extern "C" {
 
 typedef struct {
 	cl_command_queue queue;
+	cl_context context;
+	cl_program program;
 } nanos6_opencl_device_environment_t;
 
+void nanos6_execute_opencl(void * args);
 
 #ifdef __cplusplus
 }
