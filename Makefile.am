@@ -1,5 +1,5 @@
 #	This file is part of Nanos6 and is licensed under the terms contained in the COPYING file.
-#	
+#
 #	Copyright (C) 2015-2019 Barcelona Supercomputing Center (BSC)
 
 # A workaround for http://debbugs.gnu.org/cgi/bugreport.cgi?bug=18744
@@ -19,7 +19,7 @@ am__is_gnu_make = { \
 ACLOCAL_AMFLAGS = -I m4
 AM_CFLAGS = -I$(srcdir)/api -I$(srcdir)/loader -I.
 AM_CXXFLAGS = -I$(srcdir)/src -I$(builddir)/src -I$(srcdir)/api -I.
-AM_LDFLAGS = $(AS_NEEDED_FLAGS) 
+AM_LDFLAGS = $(AS_NEEDED_FLAGS)
 
 SUBDIRS = . commands tests/directive_based scripts
 
@@ -37,7 +37,7 @@ lib_suffix = $(lib_major).$(lib_age).$(lib_revision)
 
 MAX_REGION_DIMENSIONS = 8
 MULTIDIMENSIONAL_REGION_API_TYPES = read write readwrite weak_read weak_write weak_readwrite concurrent commutative weak_commutative reduction weak_reduction
-SUPPORTED_MULTIDIMENSIONAL_REGION_API_TYPES = 
+SUPPORTED_MULTIDIMENSIONAL_REGION_API_TYPES =
 
 nanos6includedir = $(includedir)/nanos6
 
@@ -67,7 +67,7 @@ nanos6include_HEADERS = \
 
 nodist_nanos6include_HEADERS = \
 	nanos6/multidimensional-dependencies.h \
-	nanos6/multidimensional-release.h 
+	nanos6/multidimensional-release.h
 
 include_HEADERS = \
 	api/nanos6.h
@@ -94,7 +94,7 @@ lib_OBJECTS = nanos6-main-wrapper.o nanos6-library-mode.o
 AM_V_LD = $(am__v_LD_@AM_V@)
 am__v_LD_ = $(am__v_LD_@AM_DEFAULT_V@)
 am__v_LD_0 = @echo "  LD      " $@;
-am__v_LD_1 = 
+am__v_LD_1 =
 
 
 
@@ -150,7 +150,7 @@ nanos6-library-mode.o: libnanos6-library-mode.a
 #
 symbol_resolution =
 symbol_resolution_header =
-multidimensional_regions = 
+multidimensional_regions =
 
 if RESOLVE_SYMBOLS_USING_IFUNC
 symbol_resolution_header += loader/symbol-resolver/resolve.h
@@ -166,6 +166,7 @@ symbol_resolution += \
 	loader/symbol-resolver/events.c \
 	loader/symbol-resolver/final.c \
 	loader/symbol-resolver/monitoring.c \
+	loader/symbol-resolver/opencl_device.c \
 	loader/symbol-resolver/polling.c \
 	loader/symbol-resolver/reductions.c \
 	loader/symbol-resolver/runtime-info.c \
@@ -195,6 +196,7 @@ symbol_resolution += \
 	loader/indirect-symbols/final.c \
 	loader/indirect-symbols/malloc.c \
 	loader/indirect-symbols/monitoring.c \
+	loader/indirect-symbols/opencl_device.c \
 	loader/indirect-symbols/polling.c \
 	loader/indirect-symbols/reductions.c \
 	loader/indirect-symbols/runtime-info.c \
@@ -227,7 +229,7 @@ libnanos6_la_LDFLAGS = $(AM_LDFLAGS) $(PTHREAD_CFLAGS) $(PTHREAD_LIBS) $(DLOPEN_
 nanos6_generated_headers = \
 	nanos6/multidimensional-dependencies.h \
 	nanos6/multidimensional-release.h
-	
+
 nodist_libnanos6_la_SOURCES = \
 	$(nanos6_generated_headers) \
 	$(multidimensional_regions)
@@ -373,7 +375,7 @@ cuda_sources = \
 	src/hardware/cuda/CUDAInfo.cpp \
 	src/hardware/cuda/compute/CUDAComputePlace.cpp \
 	src/hardware/cuda/memory/CUDAMemoryPlace.cpp \
-	src/scheduling/schedulers/cuda/CUDANaiveScheduler.cpp 
+	src/scheduling/schedulers/cuda/CUDANaiveScheduler.cpp
 
 if USE_CUDA
 common_sources += $(cuda_sources)
@@ -384,7 +386,7 @@ opencl_sources = \
 	src/hardware/opencl/openclInfo.cpp \
 	src/hardware/opencl/compute/openclComputePlace.cpp \
 	src/hardware/opencl/memory/openclMemoryPlace.cpp \
-	src/scheduling/schedulers/opencl/openclNaiveScheduler.cpp 
+	src/scheduling/schedulers/opencl/openclNaiveScheduler.cpp
 
 if USE_OPENCL
 common_sources += $(opencl_sources)
@@ -516,9 +518,9 @@ papi_hardware_counters_sources = \
 	src/instrument/stats/papi/InstrumentPAPIHardwareCounters.cpp \
 	src/instrument/stats/papi/InstrumentPAPIHardwareCountersThreadLocalData.cpp
 
-no_hardware_counters_sources = 
+no_hardware_counters_sources =
 
-noinstrument_sources = 
+noinstrument_sources =
 
 instrument_generic_ids_sources = \
 	src/instrument/generic_ids/GenericIds.cpp
@@ -1138,7 +1140,7 @@ common_libnanos6_ldflags = $(AM_LDFLAGS) $(BOOST_LDFLAGS) -version-info $(lib_cu
 
 # This is needed for debuggable spinlocks
 common_sources += $(introspection_sources)
-AM_CXXFLAGS += $(introspection_cppflags) $(elfutils_CFLAGS) 
+AM_CXXFLAGS += $(introspection_cppflags) $(elfutils_CFLAGS)
 common_libnanos6_ldflags  += $(BACKTRACE_LIBS) $(elfutils_LIBS)
 
 

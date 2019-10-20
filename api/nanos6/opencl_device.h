@@ -38,7 +38,7 @@ typedef struct {
 	cl_program program;
 } nanos6_opencl_device_environment_t;
 
-void nanos6_execute_opencl(void * args);
+void nanos6_execute_opencl(void * args, nanos6_opencl_device_environment_t * device_env);
 
 #ifdef __cplusplus
 }
