@@ -9,9 +9,9 @@
 
 #pragma GCC visibility push(default)
 
-void nanos6_execute_opencl(node * args, nanos6_opencl_device_environment_t * device_env) {
+void nanos6_execute_opencl(struct node * args, nanos6_opencl_device_environment_t * device_env) {
 {
-	typedef void nanos6_execute_opencl_t(node * args, nanos6_opencl_device_environment_t * device_env);
+	typedef void nanos6_execute_opencl_t(struct node * args, nanos6_opencl_device_environment_t * device_env);
 
 	static nanos6_execute_opencl_t *symbol = NULL;
 	if (__builtin_expect(symbol == NULL, 0)) {

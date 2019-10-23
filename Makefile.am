@@ -362,6 +362,7 @@ common_sources = \
 	src/system/RuntimeInfoEssentials.cpp \
 	src/system/debug/DebugAPI.cpp \
 	src/system/ompss/AddTask.cpp \
+	src/system/ompss/OpenCLExecution.cpp \
 	src/system/ompss/Query.cpp \
 	src/system/ompss/SpawnFunction.cpp \
 	src/system/ompss/TaskBlocking.cpp \

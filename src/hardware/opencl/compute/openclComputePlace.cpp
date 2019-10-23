@@ -96,7 +96,7 @@ void openclComputePlace::runTask(Task *task)
 				nanos6_task_info_t* taskI = task->getTaskInfo();
 				nanos6_task_invocation_info_t* taskII =task->getTaskInvokationInfo();
 */
-
+/*
 				std::vector<std::vector<DataAccess*>> allocation_vector;
 				TaskDataAccesses &accessStructures = task->getDataAccesses();
 				std::lock_guard<TaskDataAccesses::spinlock_t> guard(accessStructures._lock);
@@ -154,7 +154,7 @@ void openclComputePlace::runTask(Task *task)
 							openclErrorHandler::handle(err, "Reading Buffer");
 						}
 				}
-
+*/
         openclEvent *event = _eventPool->getEvent();
         event->setTask(task);
         event->record();
