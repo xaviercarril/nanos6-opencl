@@ -76,6 +76,9 @@ void openclComputePlace::runTask(Task *task)
 
 				env.program = _program();
 
+				//openclEvent *event = _eventPool->getEvent();
+        //event->setTask(task);
+				
   			task->body((void *) &env);
 /*
 				auto it = task->getArgsBlock();
@@ -155,10 +158,8 @@ void openclComputePlace::runTask(Task *task)
 						}
 				}
 */
-        openclEvent *event = _eventPool->getEvent();
-        event->setTask(task);
-        event->record();
-        _activeEvents.push_back(event);
+        //event->record();
+        //_activeEvents.push_back(event);
 }
 
 void openclComputePlace::postRunTask(Task *task)

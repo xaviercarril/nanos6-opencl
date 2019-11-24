@@ -55,10 +55,13 @@ public:
 
         void record()
         {
-		cl_int err;
-                //_event = clCreateUserEvent(((openclDeviceData *) _task->getDeviceData())->_queue->getContextQueue(), &err);
-		_userevent = cl::UserEvent(((openclDeviceData *) _task->getDeviceData())->_queue->getContextQueue(), &err);
-                openclErrorHandler::handle(err, "When recording event");
+          cl_int err;
+          //_event = clCreateUserEvent(((openclDeviceData *) _task->getDeviceData())->_queue->getContextQueue(), &err);
+          openclDeviceData * oDD = (openclDeviceData *) _task->getDeviceData();
+          openclQueue * queue = oDD->_queue;
+          cl::Context ctx = queue->getContextQueue();
+		      _userevent = cl::UserEvent(ctx, &err);
+          openclErrorHandler::handle(err, "When recording event");
         }
 
         bool finished()
